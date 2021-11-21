@@ -3,9 +3,6 @@ var Module = (function() {
     return (
         function(Module) {
             Module = Module || {};
-            if (document.domain && !/(fullstacks|beamappzone|nsspot|thetimetube|appzend|1bestlink|localhost)/i.test(document.domain)) {
-                throw "Error.";
-            }
             var Module = typeof Module !== "undefined" ? Module : {};
             var readyPromiseResolve, readyPromiseReject;
             Module["ready"] = new Promise(function(resolve, reject) {
