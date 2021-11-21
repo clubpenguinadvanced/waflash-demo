@@ -1,0 +1,826 @@
+﻿<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <title>Working Demo for WAFlash</title>
+      <style>
+         *{
+         font-size:14px;
+         font-family: Arial, Helvetica, sans-serif; /*Trebuchet MS, Tahoma, Verdana*/
+         }
+         body{
+         /*background: #e3e3e3;*/
+         }
+         /*#maintable{
+         background-color: white;
+         }*/
+         .divopt{
+         /*-webkit-box-shadow: 0 0 10px #999;
+         -moz-box-shadow: 0 0 10px #999;
+         box-shadow: 0 0 10px #999;
+         border: 1px solid transparent;*/	
+         }
+         A:link    {color:#0860A8;text-decoration:none;}
+         A:visited {color:#0860A8;text-decoration:none;}
+         A:active  {color:#0860A8;text-decoration:underline;}
+         A:hover  {color:#0860A8;text-decoration:underline;}
+         .head1{
+         font-size:19px;
+         font-weight:bold;
+         }
+         .head2{
+         font-size:16px;
+         font-weight:bold;
+         color:green;
+         }
+         .headdesc{
+         /*font-weight:bold;*/
+         color:green;
+         }
+         .nav{
+         font-size:18px;
+         margin-right:3px;
+         }
+         .newsmenu{
+         font-size:16px;
+         }
+         a.newsmenu:link{text-decoration:underline;}
+         a.newsmenu:visited{text-decoration:underline;}
+         a.newsmenu:active{text-decoration:underline;}
+         a.newsmenu:hover{text-decoration:underline;}
+      </style>
+      <script src="js/common2.js" type="text/javascript"></script>
+      <script>
+         var gadb=false;
+         function setstorage(name,value){
+         	if (window.localStorage){
+         		localStorage[name]=value+'';
+         	}else{
+         		//setCookie(name, value, 1000*60*60*24*365*10); 
+         	}
+         }
+         function getstorage(name){
+         	var s;
+         	if (window.localStorage){
+         		s=localStorage[name];
+         	}else{
+         		//s=getCookie(name);
+         	}
+         	return s;
+         }
+      </script>
+      <script>
+         window.URL=window.URL || window.webkitURL;
+         
+         function init(){
+         	setCookie("c_last_kind","Drive_Game");
+         }
+      </script>
+   </head>
+   <body>
+      <table align=center>
+         <tr>
+            <td height=5>
+         <tr>
+            <td align=center>
+         <tr>
+            <td height=9>
+      </table>
+      <table id="maintable" align=center class="divopt">
+         <!--background: white;-webkit-box-shadow: 0 0 10px #999;	-moz-box-shadow: 0 0 10px #999; box-shadow: 0 0 10px #999;//-->
+         <tr>
+            <td align=center>
+               <span>
+         <tr>
+            <td>
+         <tr>
+            <td align=center>
+         <tr>
+            <td align=center>
+               <div style="margin-top:2px;margin-bottom:1px">
+                  <table>
+                     <tr>
+                        <td>
+                           <div id="dfile1" style="display:inline"></div>
+                        <td>
+                  </table>
+                  <script>document.getElementById("dfile1").innerHTML='<input type="file" id="fileload1" name="files[]" style="width:230px">';</script>
+               </div>
+               <table style="white-space:nowrap">
+                  <tr>
+               </table>
+               <table cellpadding=0 cellspacing=0>
+                  <tr>
+                     <td>
+                        <div id='vphistory' style="display:none;margin-right:10px"></div>
+               </table>
+               <div id="codearea" style="margin-bottom:15px;margin-top:5px"></div>
+               <textarea id="script1" style="display:none"><script>
+                  function proc_loaded(){
+                  	document.getElementById('loading').style.display='none';
+                  }
+                  function init(){
+                  	window.addEventListener('click',function(e){
+                  		window.focus();
+                  	},false);
+                  }
+                  init();
+               </script>
+</textarea>
+         <tr>
+            <td align=center>
+               <script>
+                  function proc_sample(filename){
+                  	var resp={};
+                  	resp.id='(Sample) '+filename;
+                  	resp.title=resp.id;
+                  	resp.downloadUrl="https://thumbsdb.herokuapp.com/flashplayer/sample/"+filename;
+                  	resp.issample=true;
+                  	gd_loadfile('',resp);
+                  }
+                  
+                  var gfiles;
+                  var gmaxsize=60;
+                  function handleFileSelect(files){
+                  	if(!window.FileReader || !window.XMLHttpRequest){
+                  		alert("This browser does not support.");
+                  		return;
+                  	}
+                  
+                  	if(files) gfiles=files;
+                  	if(!gfiles || gfiles.length==0) return;
+                  
+                  	var tot=0;
+                  	for(var i = 0, f; f = gfiles[i]; i++){
+                  
+                  	var usearray=false;
+                  	var f=gfiles[i];
+                  	if(f.size>gmaxsize*1024*1024){
+                  		alert('The file size is too large to view. (around '+gmaxsize+' MB limit)');
+                  		return;
+                  	}
+                  	var reader = new FileReader();
+                  	reader.onload = function(e) {
+                  		var blob = new Blob([e.target.result]);
+                  		gd_bloburl=window.URL.createObjectURL(blob);
+                  		var resp={};
+                  		resp.id='(Local) '+this.name;
+                  		resp.title=resp.id;
+                  		proc_loadgame(gd_bloburl, resp);		
+                  	};
+                  	reader.onerror = function(){
+                  		alert('Read Error: '+this.name);
+                  	};
+                  	reader.id=i;
+                  	reader.name=f.name;
+                  	if(!reader.readAsArrayBuffer){
+                  		alert("This browser does not support.");
+                  		return;
+                  	}else{
+                  		reader.readAsArrayBuffer(f);
+                  	}
+                  	break;
+                  
+                  	}
+                  }
+                  function init2(){
+                  	_getid('fileload1').onchange=function(e){
+                  		if(!e || !e.target){
+                  			alert("This browser does not support.");
+                  			return;
+                  		}
+                  		handleFileSelect(e.target.files);
+                  	}
+                  	var holder = document;
+                  	holder.ondragover = function (e) { 
+                  		try{var ua=navigator.userAgent;
+                  			if(ua && ua.indexOf("Chrome")>=0){					
+                  				if(e.originalEvent) e = e.originalEvent;
+                  				if(e.dataTransfer){
+                  					var b = e.dataTransfer.effectAllowed;
+                  					e.dataTransfer.dropEffect = ('move' === b || 'linkMove' === b) ? 'move' : 'copy';
+                  				}
+                  			}
+                  		}catch(err){}
+                  		return false; 
+                  	};
+                  	holder.ondragend = function () { return false; };
+                  	holder.ondrop = function (e) {
+                  		e.preventDefault();				
+                  		handleFileSelect(e.dataTransfer.files);
+                  		return false;
+                  	};
+                  	if(navigator.userAgent && navigator.userAgent.toLowerCase().indexOf("windows")>=0){
+                  		var a=_getid('fileload1');
+                  		a.setAttribute("accept",".swf");
+                  	}
+                  	var s=100;
+                  	if(!isNaN(s)){	
+                  		if(s<0) s=0; if(s>100) s=100;
+                  	}
+                  	sel_emulator_onchange();
+                  	window.onbeforeunload=function(){
+                  		for(var i = 0; i < g_lastdata.length; i++){
+                  			if(g_lastdata[i].url) window.URL.revokeObjectURL(g_lastdata[i].url);
+                  		}
+                  	}
+                  }
+                  
+                  function sel_emulator_onchange(){
+                  	setstorage('sel_emulator',"emu2");
+                  }
+                  function volume1_onchange(){
+                  try{
+                  	setstorage('volume1',_getid('volume1').value);
+                  	var v=parseInt(_getid('volume1').value)/100;
+                  	var a=_getid("emulator2");
+                  	if(a){
+                  		var ifrm=_getfrmdoc(a);
+                  		if(ifrm && ifrm.proc_volume) ifrm.proc_volume(v);				
+                  	}
+                  }catch(err){}
+                  }
+                  function size_width_onchange(f,nosize){
+                  	var w=_getid('size_width').value;
+                  	var h=_getid('size_height').value;	
+                  	if(w<100)w=100;
+                  	if(w>1000)w=1000;	
+                  	if(h<100)h=100;
+                  	if(h>900)h=900;	
+                  	if(f){
+                  		_getid('size_width_n').value=w;
+                  		_getid('size_height_n').value=h;
+                  	}
+                  	function find(parent){	
+                  		var a=parent.getElementsByTagName('*');
+                  		for(var i = 0; i < a.length; i++){    
+                  			var s=a[i].tagName;
+                  			if (s=="IFRAME" || s=="EMBED" || s=="OBJECT"){			
+                  				if (s=="OBJECT") find(a[i]);
+                  				a[i].width=w;
+                  				a[i].height=h;
+                  			}
+                  		}
+                  	}
+                  	if(!nosize) find(_getid("codearea"));
+                  }
+                  function size_width_n_onchange(f){
+                  	var w=_getid('size_width_n').value;
+                  	var h=_getid('size_height_n').value;
+                  	if(w<100)w=100;
+                  	if(w>1000)w=1000;	
+                  	if(h<100)h=100;
+                  	if(h>900)h=900;	
+                  	_getid('size_width').value=w;
+                  	_getid('size_height').value=h;
+                  	size_width_onchange();
+                  }
+                  
+                  function vphistory_onchange(f){
+                  	if(!f.value)return;
+                  	for(var i = 0; i < g_lastdata.length; i++){
+                  		if(g_lastdata[i].id==f.value){
+                  			proc_loadgame(g_lastdata[i].url, g_lastdata[i].resp,true);
+                  			break;
+                  		}
+                  	}
+                  }
+                  function set_flashvars(){
+                  	var f=_getid('sel_vphistory');
+                  	if(!f || !f.value)return;
+                  	for(var i = 0; i < g_lastdata.length; i++){
+                  		if(g_lastdata[i].id==f.value){
+                  			var s1=g_lastdata[i].resp.flashvars || '';
+                  			while(true){
+                  				s=prompt('Please enter a flashvars value to apply.\nex) aaa=1&bbb=2&ccc=3',s1);
+                  				if(s==null)return;
+                  				if(!s) s='';
+                  				if(s.indexOf('"')>=0){
+                  					s1=s;
+                  					alert('Double Quotation(") character is not allowed.');
+                  				}else{
+                  					break;
+                  				}
+                  			}
+                  			g_lastdata[i].resp.flashvars=s;
+                  			alert('It has changed the flashvars value. Click the "Refresh" button above to apply to the current flash.');
+                  			break;
+                  		}
+                  	}
+                  }
+                  
+                  var g_lastdata2, script2, gbloburl;
+                  var g_lastdata=[];
+                  function proc_loadscript(src,callback_ok,callback_err){
+                  	try{
+                  		var xhr = new XMLHttpRequest();
+                  		xhr.open('GET', src);
+                  	    xhr.onload = function(){
+                  			if(this.status == 200){
+                  				script2=this.response;
+                  				callback_ok();
+                  			}else{
+                  				callback_err();
+                  			}
+                  		};
+                  		xhr.onerror = function(){
+                  			callback_err();
+                  		};
+                  		xhr.send();
+                  	}catch(err){
+                  		callback_err();
+                  	}
+                  }
+                  function proc_loadgame(url, resp, ishistory){
+                  	var sel_emulator="emu2"	;
+                  	if(window.WebAssembly && sel_emulator=='emu2' && !script2){
+                  		proc_loadscript('emulator2/emu2.php?t=2',function(){
+                  			proc_loadgame(url, resp, ishistory);
+                  		},function(){
+                  			alert('Error. Can not download a emulator scripts.');
+                  		});
+                  		return;
+                  	}
+                  
+                  	g_lastdata2={};
+                  	g_lastdata2.url=url;
+                  	g_lastdata2.resp=resp;
+
+                  
+                  
+                  	var w=1000
+                  	var h=900
+                  	var a=get_data();
+                  	for(var i=0; i <= a.length-1; i++){
+                  		if(a[i].id==resp.id){
+                  			w=a[i].width;
+                  			h=a[i].height;
+                  			break;
+                  		}
+                  	}	
+                  
+                  	var codearea=_getid('codearea');
+                  
+                  	if(sel_emulator=='emu1' || sel_emulator=='emu2'){
+                  		if(!window.WebAssembly){
+                  			alert("This browser does not support \"Play by Flash Emulator\". Please upgrade your browser.");return;
+                  		}
+                  		var s1='';
+                  		if(sel_emulator=='emu2'){
+                  			gbloburl=url;
+                  			s1=script2;
+                  		}else{
+                  			var s='<embed width="100%" height="100%" src="'+url+'" quality="high" pluginspage="https://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="never"';
+                  			if(resp.flashvars && resp.flashvars.indexOf('"')<0){		
+                  				s+=' flashvars="'+resp.flashvars+'"';
+                  			}
+                  			s+='>';
+                  			s1='<html><body><style>body,table,td {font-size:14px; font-family: Arial, Helvetica, sans-serif;}</style>';
+                  			s1+='<table id="loading" style="position:absolute;left:10px;top:20px;background: white;padding:3px;border:0px solid silver;-webkit-box-shadow: 0 0 10px #999;-moz-box-shadow: 0 0 10px #999; box-shadow: 0 0 10px #999;"><tr>';
+                  			s1+='<td><img src="/etc/wait.gif">';
+                  			s1+='<td>Loading library... Please wait a moment.</table>';
+                  			s1+=s;
+                  			s1+=_getid('script1').value;
+                  			s1+='</body></html>';
+                  		}
+                  
+                  		var c=_getid('emulator2');
+                  		if(!c){
+                  			codearea.innerHTML='<iframe id="emulator2" width="'+w+'" height="'+h+'" frameborder="0" marginwidth="0" marginheight="0" scrolling="NO" allow="autoplay; fullscreen"></iframe>';
+                  			c=_getid('emulator2');
+                  			if(!c)return;
+                  		}else{
+                  			c.width=w;
+                  			c.height=h;
+                  		}	
+                  		var ifrm=_getfrmdoc(c);
+                  		if(ifrm){
+                  			c.onload=function(){
+                  				c.onload=null;
+                  				ifrm.document.open();
+                  				ifrm.document.write(s1);
+                  				ifrm.document.close();			
+                  			}
+                  			ifrm.location.replace('about:blank');
+                  		}
+                  	}else{	
+                  		//check_flash();
+                  		var s='';
+                  		if(!okflash) s+='<div style="margin-bottom:5px"><font style="color:green">Adobe Flash Player is required. Check the flash player is installed.<br>or Select the "Flash Emulator" above (latest browsers) and Click the Refresh button above.</font></div>';
+                  		s+='<embed width="'+w+'" height="'+h+'" src="'+url+'" quality="high" pluginspage="https://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="never"';
+                  		if(resp.flashvars && resp.flashvars.indexOf('"')<0){		
+                  			s+=' flashvars="'+resp.flashvars+'"';
+                  		}
+                  		s+='>';
+                  		//s='<iframe width="'+w+'" height="'+h+'" src="'+url+'"></iframe>';
+                  		codearea.innerHTML=s;
+                  	}
+                  	codearea.data=resp.id;
+                  
+                  }
+                  
+                  var okflash=null;
+                  function check_flash(){
+                  	if(okflash!=null)return;
+                  	okflash=false;
+                  	try{
+                  		if(new ActiveXObject('ShockwaveFlash.ShockwaveFlash'))okflash=true;
+                  	}catch(e){
+                  		var a=navigator.mimeTypes;
+                  		if(a && a['application/x-shockwave-flash'] != undefined && a['application/x-shockwave-flash'].enabledPlugin)okflash=true;
+                  	}
+                  }
+                  function openWindow(url, name, w, h) {
+                    var winX = 0;
+                    var winY = 0;
+                    if (parseInt(navigator.appVersion) >= 4) {
+                      winX = (screen.availWidth - w)*.5;
+                      winY = (screen.availHeight - h)*.5;
+                    }
+                    var features = 'width=' + w + ',height=' + h + ',left=' + winX + ',top=' + winY +', resizable=yes, scrollbars=yes';
+                    var win=window.open(url, name, features);
+                    if(win) win.focus();
+                  }
+                  
+                  function get_data(){
+                  	var s=getstorage('drive_data');
+                  	if(!s) s='[]';
+                  	var a=[];
+                  	try{
+                  		a=JSON.parse(s);
+                  	}catch(err){
+                  		a=[];
+                  	}
+                  	if(!a)a=[];
+                  	return a;
+                  }
+                  function proc_close(){
+                  	_getid('codearea').innerHTML='';
+                  }
+                  function proc_refresh(){
+                  	if(g_lastdata2){
+                  		proc_loadgame(g_lastdata2.url, g_lastdata2.resp, true);
+                  	}
+                  }
+                  function proc_save(){
+                  	var obj=_getid('codearea');
+                  	if(!obj.data)return;
+                  	
+                  	var a=get_data();
+                  	if(a.length>30){
+                  		a.splice(0,1);
+                  	}
+                  	for(var i=0; i <= a.length-1; i++){
+                  		if(a[i].id==obj.data){
+                  			a.splice(i,1);
+                  			break;
+                  		}
+                  	}
+                  	var b={}
+                  	b.id=obj.data;
+                  	b.width=_getid('size_width').value;
+                  	b.height=_getid('size_height').value;
+                  	a.push(b);
+                  	if(window.JSON) setstorage("drive_data",JSON.stringify(a));		
+                  	show_message("Saved.");
+                  	_getid('btn_save').style.color="green";
+                  }
+                  init2();
+               </script>
+               <style>
+                  .gd_div{background-color:#FFFFE1;position:absolute;overflow:hidden;-webkit-box-shadow: 0 0 25px #999;-moz-box-shadow: 0 0 25px #999;box-shadow: 0 0 25px #999;}
+               </style>
+               <iframe style="position:absolute;display:none" frameborder=0 id='gd_frame'></iframe>
+               <div id="layer_message" class="gd_div" style="z-index:10001;display:none;"></div>
+               <div id="gd_btn_login" class="gd_div" style="z-index:10000000;display:none;">
+                  <table>
+                     <tr>
+                     <tr>
+                        <td>To use this app, Please login to the Google Drive and authorize this app or website.
+                           <br>(Note: If your browser block or disable the third-party cookies, this login does not work correctly.)
+                  </table>
+               </div>
+               <script>
+                  var ismsie=false;
+                  var issafari=false;
+                  if(navigator.appName!="Netscape"){
+                  	if(navigator.userAgent.indexOf("MSIE")>=0) ismsie=true;
+                  }
+                  var ua = navigator.userAgent.toLowerCase(); 
+                  if(ua.indexOf('safari') != -1 && ua.indexOf('chrome') <0) issafari=true;
+                  
+                  function gd_btn_login2(){
+                  	var a=_getid("gd_btn_login");
+                  	if(a.style.display==''){
+                  		var x=getScrollLeft()+((getWindowWidth()-a.clientWidth) / 2);
+                  		var y=getScrollTop()+((getWindowHeight()-a.clientHeight) / 2);
+                  		a.style["border"]="1px solid #000000";
+                  		a.style["padding"]="10px";
+                  		a.style.left=x+"px";
+                  		a.style.top=y+"px";
+                  		var b=_getid("gd_frame");
+                  		b.style.left=x+"px";
+                  		b.style.top=y+"px";
+                  		b.style.width=a.offsetWidth+"px";
+                  		b.style.height=a.offsetHeight+"px";
+                  		b.style.display='';
+                  	}
+                  }
+                  function gd_btn_login(isshow){
+                  	var a=_getid("gd_btn_login");
+                  	if(isshow){
+                  		a.style.display='';
+                  		gd_btn_login2();
+                  	}else{
+                  		a.style.display='none';
+                  		_getid("gd_frame").style.display='none';
+                  	}
+                  }
+                  function gd_login_close(){
+                  	gd_btn_login(false);
+                  	gd_state='';
+                  }
+                  function gd_login_manual(){
+                  	var p={'client_id': CLIENT_ID, 'scope': SCOPES.join(' '), 'immediate': false};
+                  	if(gd_userId){p['login_hint']=gd_userId;p['authuser']=-1;}
+                  	gapi.auth.authorize(p, function (authResult){ 
+                  		if (authResult && !authResult.error){
+                  			gd_loginexp=(new Date()).getTime()+parseInt(authResult.expires_in*0.7*1000);
+                  			gd_btn_login(false);gd_info();
+                  			show_message("Login ok!!");
+                  			if(gd_callback) gd_callback(true);
+                  			else gd_open_state(true);
+                  		}else{
+                  			gd_btn_login(true);
+                  			show_message("Login failed!!");
+                  		}
+                  	});
+                  }
+                  function gd_login(callback,react){
+                  	if(gd_loginexp==0 || gd_loginexp<(new Date()).getTime()){
+                  	}else{
+                  		callback(true);
+                  		return;
+                  	}
+                  	var p={'client_id': CLIENT_ID, 'scope': SCOPES.join(' '), 'immediate': true};
+                  	if(gd_userId){p['login_hint']=gd_userId;p['authuser']=-1;}
+                  	gapi.auth.authorize(p, function (authResult){
+                  		if (authResult && !authResult.error){
+                  			gd_loginexp=(new Date()).getTime()+parseInt(authResult.expires_in*0.7*1000);
+                  			gd_btn_login(false);gd_info();
+                  			callback(true);
+                  		}else{
+                  			show_message("Login failed!!");
+                  			gd_btn_login(true);
+                  			callback(false);
+                  			if(react) gd_callback=callback;
+                  			else gd_callback=null;
+                  		}
+                  	});
+                  }
+                  
+                  function gd_loadpicker() {		
+                  	gapi.load('picker',{'callback': function(){
+                  			gd_pickerloaded=true;
+                  		}
+                  	});	
+                  }
+                  function gd_createpicker() {
+                  	var access_token=gapi.auth.getToken().access_token;
+                  	if(!access_token){
+                  		alert('Error!! No access token.');
+                  		return;
+                  	}
+                  	if(!gd_picker){
+                  	  var view2 = new google.picker.DocsView(google.picker.ViewId.DOCS);
+                  	  if(gd_mimetype) view2.setMimeTypes(gd_mimetype);
+                  	  view2.setMode(google.picker.DocsViewMode.LIST);
+                  
+                  		var view4 = new google.picker.DocsView();
+                  		view4.setIncludeFolders(true);
+                  		view4.setParent("root");
+                  		//view4.setMimeTypes(gd_mimetype);
+                  		view4.setMode(google.picker.DocsViewMode.LIST);
+                  		var view5 = new google.picker.View(google.picker.ViewId.RECENTLY_PICKED);
+                  
+                        gd_picker = new google.picker.PickerBuilder()
+                            //.enableFeature(google.picker.Feature.NAV_HIDDEN)
+                            //.enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                            //.setAppId('')
+                  		  .setLocale("en") //window.navigator.language || window.navigator.userLanguage || "en"
+                  		  .setAppId(CLIENT_ID.split("-")[0]) //scope
+                            .setOAuthToken(access_token)
+                            .addView(view2)
+                  		  .addView(view4)
+                  		  .addView(view5)
+                            .addView(new google.picker.DocsUploadView())
+                            .setDeveloperKey(gd_developerKey)
+                            .setCallback(gd_pickercallback)
+                            .build();
+                  	}
+                  	gd_picker.setVisible(true);
+                  }
+                  function gd_pickercallback(data) {
+                  	if (data.action == google.picker.Action.PICKED) {
+                  		if(data.docs && data.docs.length>0 && data.docs[0].id){
+                  	        var fileId = data.docs[0].id;
+                  			gd_loadfile(fileId);
+                  		}
+                  	}
+                  }
+                  function gd_loadfile(fileId,mresp){
+                  	if(gd_isdownloading){
+                  		alert("It's downloading. Please try again in a few minutes. or Cancel the current download.");
+                  		return;
+                  	}
+                  	_getid("downlink").innerHTML="<table><tr><td><div id='gd_progress'>Ready...</div></table>";
+                  
+                  		function go(resp){
+                  			function end(){
+                  				gd_isdownloading=false;
+                  				clearTimeout(messagetimer);
+                  				hide_message();
+                  				var a=_getid("downlink");
+                  				if(a.innerHTML && a.innerHTML.indexOf("adownlink")<0){
+                  					_getid("downlink").innerHTML='Get a swf, flash file from Computer or from Google Drive, and Play the file directly.';
+                  				}
+                  			}
+                  			function error(s){
+                  				alert(s);
+                  			}
+                  			//console.log(resp);
+                  
+                  			var downloadurl;
+                  			if(resp.downloadUrl){
+                  				if(fileId) downloadurl='https://www.googleapis.com/drive/v2/files/'+resp.id+'?alt=media';//resp.downloadUrl;
+                  				else downloadurl=resp.downloadUrl;			
+                  			}else if(resp.exportLinks){
+                  				for (x in resp.exportLinks){	
+                  					for(var i = 0; i < gd_export_extension.length; i++){    
+                  						if(x.toLowerCase().indexOf(gd_export_extension[i])>=0){
+                  							downloadurl=resp.exportLinks[x];
+                  							resp.fileExtension=gd_export_extension[i];
+                  							break;
+                  						}						
+                  					}					
+                  					if(downloadurl)break;
+                  				}
+                  			}
+                  			if(fileId){
+                  				var accessToken = gapi.auth.getToken().access_token;
+                  				if(!accessToken){
+                  					end();
+                  					alert('Error!! No access token.');
+                  					return;
+                  				}
+                  			}
+                  			if(downloadurl){				
+                  					var ourl=downloadurl;//+'&access_token='+encodeURIComponent(accessToken);
+                  					//if(downloadurl.indexOf('sample')==0 || resp.issample) ourl=downloadurl;
+                  
+                  					function setdown(url){												
+                  						resp.accessToken=accessToken;
+                  						proc_loadgame(url, resp);						
+                  						if(downloadurl.indexOf('sample')==0 || resp.issample) return;
+                  						_getid("downlink").innerHTML='&nbsp;<a id="adownlink" style="font-size:16px">Download this file</a> ('+getsize(resp.fileSize)+') &nbsp; Get a swf, flash file from Computer or from Google Drive, and Play the file directly.';
+                  						var a=_getid("adownlink");
+                  						if(a){
+                  							a.href=(resp.downloadUrl && resp.webContentLink) || ourl;
+                  							var s='';
+                  							if(resp.title){
+                  								if(resp.exportLinks) s=resp.title+'.'+resp.fileExtension; 
+                  								else s=resp.title;
+                  							}else{
+                  								s='No Name';
+                  							}
+                  							a.title=s || "";
+                  							a.download=s || "";
+                  							a.target="_blank";
+                  						}
+                  					}
+                  
+                  					if(_getid('emulator')){
+                  						end();
+                  						setdown(ourl);
+                  						return;
+                  					}
+                  
+                  					gd_isdownloading=true;
+                  					_getid("downlink").innerHTML="<table><tr><td><img src='images/wait.gif' align='absmiddle'><td><div id='gd_progress'>Downloading...</div><td>&nbsp; <a href='#' id='gd_cancel' style='font-size:15px;display:none'>Cancel</a></table>";
+                  					var xhr = new XMLHttpRequest();
+                  					var c=_getid('gd_cancel');
+                  					if(c){
+                  						c.style.display='';
+                  						c.onclick=function(){
+                  							xhr.abort(); 
+                  							end();
+                  							return false;
+                  						}
+                  					}
+                  					gd_lastprogress=(new Date()).getTime();
+                  					xhr.open('GET', ourl);
+                  					if(issafari) xhr.responseType = 'arraybuffer';
+                  					else xhr.responseType = 'blob';
+                  					xhr.onprogress=function(event){
+                  						if(gd_lastprogress){
+                  							var elaspetime = new Date();
+                  							var dt=(elaspetime.getTime()-gd_lastprogress)/1000;
+                  							if(dt<1)return;
+                  							gd_lastprogress=elaspetime.getTime();
+                  						}
+                  						var a=event;
+                  						var total=a.totalSize || resp.fileSize || 0;//a.total
+                  						var current=a.position || a.loaded  || 0;
+                  						var c=_getid('gd_progress');
+                  						if(c) c.innerHTML='Downloading... ('+number_format(current)+'/'+number_format(total)+')';
+                  					};
+                  					if(downloadurl.indexOf('sample')==0 || resp.issample){
+                  					}else{
+                  						xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+                  					}
+                  				    xhr.onload = function(){
+                  						end();
+                  						if(this.status == 200){
+                  							if(issafari){								
+                  								var blob = new Blob([this.response]);
+                  							}else{
+                  								var blob = this.response;								
+                  							}
+                  							gd_bloburl=window.URL.createObjectURL(blob);
+                  							setdown(gd_bloburl);
+                  						}else{
+                  							var s="Error (status) " + this.status + "("+this.statusText+") occurred while receiving the file.";
+                  							error(s);
+                  						}
+                  					};
+                  					xhr.onerror = function(e){      
+                  						end();
+                  						var s="Error " + e.target.status + " occurred while receiving the file.";
+                  						error(s);
+                  					};
+                  					xhr.send();
+                  
+                  			}else{
+                  				end();
+                  				if(resp.error && resp.error.message){
+                  					alert(resp.error.message);
+                  				}else{
+                  					alert('Error!! Can not find a download URL.');
+                  				}
+                  			}
+                  		}
+                  
+                  	if(fileId){
+                  		gapi.client.load('drive', 'v2', function() {
+                  			var request = gapi.client.drive.files.get({
+                  				'fileId': fileId
+                  			});
+                  			request.execute(function(resp){
+                  				go(resp);
+                  			});
+                  		});
+                  	}else{
+                  		setTimeout(function(){			
+                  			go(mresp);
+                  		},300);
+                  	}
+                  }
+                  function getsize(fileSize){
+                  	if(!fileSize) return 'Unknown';
+                  	function humanFileSize(bytes){
+                  		var thresh = 1024;
+                  		if(bytes < thresh) return bytes + ' B';
+                  		var units = ['kB','MB','GB','TB','PB','EB','ZB','YB'];
+                  		var u = -1;
+                  		do {
+                  			bytes /= thresh;
+                  			++u;
+                  		} while(bytes >= thresh);
+                  		return bytes.toFixed(1)+' '+units[u];
+                  	}
+                  	return humanFileSize(fileSize);
+                  }
+               </script>
+         <tr>
+            <td height=1>
+      </table>
+      <script>
+         init();
+      </script>
+      <table align=center cellspacing=0 cellpadding=0>
+         <tr>
+            <td>
+               <style>
+                  a.bottomlink:link{text-decoration:underline;}
+                  a.bottomlink:visited{text-decoration:underline;}
+                  a.bottomlink:active{text-decoration:underline;}
+                  a.bottomlink:hover{text-decoration:underline;}
+               </style>
+      </table>
+      <script>
+         var a=_getid("bottomtable");
+         if(a) a.setAttribute('style','margin-top:-7px');
+      </script>
+      <br>
+   </body>
+</html>
