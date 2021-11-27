@@ -1,5 +1,5 @@
 ﻿import createWaflashModule from "./waflash.js?2021111901";
-const WAFLASH_BASE_URL = "http://play.localhost/waflash-demo/emulator2/waflash_latest/",
+const WAFLASH_BASE_URL = "https://clubpenguinadvanced.github.io/waflash-demo/alt/emulator2/waflash_latest/",
     createWaflash = (t, e) => {
         if (t || (t = ""), (e = e || {}).flashVars && (t += (t.includes("?") ? "&" : "?") + e.flashVars), self != top) return;
         let a = {
